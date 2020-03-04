@@ -1,0 +1,113 @@
+#include<stdio.h>
+
+typedef struct Date{
+	int year;
+	int month;
+	int day;
+}Date;
+
+int Leap(Date day);
+int Daysofmonth(Date day); 
+void Daysoftoday(Date Day);
+int Numbleofday(Date Day);
+
+int main(int argc,const char* argv)
+{
+	Date today;
+	Date *p=&today;
+	Date tomorrow_day;
+	int days; 
+	
+	
+	printf("请输入今天的日期(year.month.day)：");
+	scanf("%d %d %d",&today.year,&today.month,&today.day);
+	
+	int leap;
+	leap=Leap(today);
+	
+	if(leap)
+		printf("this year is a leap year\n");
+	
+	int end=Numbleofday(today);
+	if( end!=1 ){
+		tomorrow_day.day=p->day+1;
+		tomorrow_day.month=p->month;
+		tomorrow_day.year=p->year;
+	}else if( p->month==12 ){
+		tomorrow_day.day=1;
+		tomorrow_day.month=1;
+		tomorrow_day.year=p->year+1;
+	}else {
+		tomorrow_day.day=1;
+		tomorrow_day.month=p->month+1;
+		tomorrow_day.year=p->year;
+	}
+	
+	days=Daysofmonth(today); 
+	printf("这个月有%d天\n",days);
+	Daysoftoday(today);
+	
+	printf("today is %d.%d.%d\ntomorrow_day is %d.%d.%d\n",today.year,today.month,today.day,tomorrow_day.year,tomorrow_day.month,tomorrow_day.day);
+	return 0;
+} 
+
+//判断是否为闰年 
+int Leap(Date day)
+{
+	int leap;
+	if((day.year%4==0 && day.year%100!=0) || day.year%400==0){
+		leap=1;
+		//printf("%d is a leap year",year);
+	}else{
+		leap=0;
+		//printf("%d is not a leap year",year);
+	}
+	return leap;
+}
+
+//这个月有多少天 
+int Daysofmonth(Date day)
+{
+	int days;
+	int i,sum;
+	
+	const int daysofmonth[12]={31,28,31,30,31,30,31,31,30,31,30,31};
+	
+	if( day.month==2 && Leap(day) )
+		days=29;
+	else 
+		days=daysofmonth[day.month-1];
+	
+	return days;
+}
+
+//今天是今年的第几天 
+void Daysoftoday(Date Day)
+{
+	int daysofmonth[12]={31,28,31,30,31,30,31,31,30,31,30,31};
+	int i,sum=0;
+	
+	if( Leap(Day) )
+		daysofmonth[1]=29;
+		
+	for( i=0;i<Day.month-1;i++){
+		sum+=daysofmonth[i];
+	}
+	sum+=Day.day;
+	
+	printf("今天是今年的第%d天\n",sum);
+}
+//判断今天是不是这个月的最后一天
+int Numbleofday(Date Day)
+{
+	int daysofmonth[12]={31,28,31,30,31,30,31,31,30,31,30,31};
+	int mark=1;
+	
+	if( Leap(Day) )
+		daysofmonth[1]=29;
+		
+	if( Day.day!=daysofmonth[Day.month-1] ){
+		mark=0;
+	}
+	return mark;//返回mark为1，是这个月的最后一天，返回0，则不是 
+} 
